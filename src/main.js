@@ -7,7 +7,7 @@ const schema = require("../template");
 const writeFile = promisify(fs.writeFile);
 const appendFile = promisify(fs.appendFile);
 
-export async function createSchema(options) {
+export async function createSchema(options, schemaKeyValues) {
   const schemaOptions = {
     ...options,
     dirPath: path.resolve(__dirname, "../template"),
@@ -19,6 +19,12 @@ export async function createSchema(options) {
   console.log("Creating File for Dynamic Values");
 
   await writeFile(schemaOptions.outPath, schema.schemaTop());
+  for (let i = 0; i < options.schemaKeys; i++) {
+    await appendFile(
+      schemaOptions.outPath,
+      schema.createSchemaObject(schemaKeyValues[i])
+    );
+  }
   await appendFile(schemaOptions.outPath, schema.schemaBottom());
 
   // const tasks = new Listr([

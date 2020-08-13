@@ -115,10 +115,10 @@ export async function promptForSchemaObject() {
   const answers = await inquirer.prompt(questions);
 
   return {
-    name: answers.name,
+    schemaName: answers.name,
     type: answers.type,
-    required: answers.required,
-    default: answers.default,
+    isRequired: answers.required,
+    defaultValue: answers.default,
   };
 }
 

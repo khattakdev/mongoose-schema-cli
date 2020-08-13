@@ -18,8 +18,13 @@ const userSchema = new Schema({
   `;
 }
 
-export function schemaBottom() {
+export function schemaBottom(timeStamps) {
   return `
+  ${
+    timeStamps
+      ? `  timestamps: { createdAt: "created_at", updatedAt: "updated_at" } `
+      : ""
+  }
 });
 module.exports = userSchema;
   `;

@@ -1,6 +1,8 @@
 import arg from "arg";
 import inquirer from "inquirer";
-import createSchema from "./createSchema";
+const schema = require("./main");
+
+// export var schemaDetails = {};
 function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(
     {
@@ -23,8 +25,7 @@ function parseArgumentsIntoOptions(rawArgs) {
 }
 
 async function promptForMissingOptions(options) {
-  // Select these if user don't input
-  const defaultChoices = {
+  const defaultOptions = {
     language: "Javascript",
     mongoose: false,
     schema: "default",
@@ -43,7 +44,7 @@ async function promptForMissingOptions(options) {
       name: "language",
       message: "Please choose which language Schema to use",
       choices: ["JavaScript", "TypeScript"],
-      default: defaultChoices.language,
+      default: defaultOptions.language,
     });
   }
 
@@ -52,7 +53,7 @@ async function promptForMissingOptions(options) {
       type: "confirm",
       name: "mongoose",
       message: "Do you want to have it in mongoose?",
-      default: defaultChoices.mongoose,
+      default: defaultOptions.mongoose,
     });
   }
 
@@ -60,7 +61,7 @@ async function promptForMissingOptions(options) {
     type: "input",
     name: "schema",
     message: "Please input Schema name",
-    default: defaultChoices.schema,
+    default: defaultOptions.schema,
   });
 
   const answers = await inquirer.prompt(questions);
@@ -72,10 +73,83 @@ async function promptForMissingOptions(options) {
   };
 }
 
+export async function promptForSchemaObject() {
+  console.log();
+  const defaultOptions = {
+    name: "default",
+    type: "String",
+    required: true,
+    default: "",
+  };
+  const questions = [];
+
+  questions.push({
+    type: "input",
+    name: "name",
+    message: "Please input Schema Key name",
+    default: defaultOptions.name,
+  });
+
+  questions.push({
+    type: "list",
+    name: "type",
+    message: "Please input Schema Key type",
+    choices: ["String", "Number", "Boolean"],
+    default: defaultOptions.name,
+  });
+
+  questions.push({
+    type: "confirm",
+    name: "required",
+    message: "Is this Schema Key Required",
+    default: defaultOptions.required,
+  });
+
+  questions.push({
+    type: "input",
+    name: "default",
+    message: "What is the default value?",
+    default: defaultOptions.default,
+  });
+
+  const answers = await inquirer.prompt(questions);
+
+  return {
+    name: answers.name,
+    type: answers.type,
+    required: answers.required,
+    default: answers.default,
+  };
+}
+
 export async function cli(args) {
   var options = parseArgumentsIntoOptions(args);
+  // Initial Inputs
   options = await promptForMissingOptions(options);
-  // console.log(options);
-  await createSchema(options);
-  console.log("Schema Created");
+
+  const { schemaKeys } = await inquirer.prompt({
+    type: "input",
+    name: "schemaKeys",
+    message: "How many key this Schema has?",
+    default: 0,
+  });
+
+  // Get Schema Keys' Input
+  const schemaKeyValues = [];
+  for (let i = 0; i < schemaKeys; i++) {
+    const objectValues = await promptForSchemaObject();
+    schemaKeyValues.push(objectValues);
+  }
+
+  options = {
+    ...options,
+    schemaKeys,
+  };
+
+  // schemaDetails = {
+  //   options,
+  //   schemaKeyValues,
+  // };
+
+  await schema.createSchema(options, schemaKeyValues);
 }

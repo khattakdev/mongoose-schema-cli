@@ -3,8 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
-  "keywords": [],
+  "bin": {
+    "msc-gen": "bin/index.js"
+  },
+  "keywords": [
+    "mongodb",
+    "mongoose",
+    "schema",
+    "CLI",
+    "generator",
+    "database"
+  ],
   "author": "Arsalan Khattak <akkhattak65@gmail.com>",
   "license": "MIT",
   "dependencies": {

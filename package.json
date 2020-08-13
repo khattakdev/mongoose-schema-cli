@@ -1,7 +1,7 @@
 {
   "name": "mongodb-schema-cli",
   "version": "1.0.0",
-  "description": "",
+  "description": "A MongoDB Schema Generator CLI",
   "main": "index.js",
   "bin": {
     "msc-gen": "bin/index.js"

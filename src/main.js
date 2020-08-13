@@ -15,35 +15,28 @@ export async function createSchema(options, schemaKeyValues) {
   };
 
   console.log();
-  console.log("<--------------------------------->");
-  console.log("Creating File for Dynamic Values");
 
-  await writeFile(schemaOptions.outPath, schema.schemaTop());
-  for (let i = 0; i < options.schemaKeys; i++) {
-    await appendFile(
-      schemaOptions.outPath,
-      schema.createSchemaObject(schemaKeyValues[i])
-    );
-  }
-  await appendFile(schemaOptions.outPath, schema.schemaBottom());
+  // initializeSchema(schemaOptions.outPath);
+  // await createObjects(schemaOptions.outPath, schemaKeyValues);
+  // exportSchema(schemaOptions.outPath, schema.schemaBottom());
 
-  // const tasks = new Listr([
-  //   {
-  //     title: "Creating File and Adding Imports",
-  //     task: () => initializeSchema(schemaOptions.outPath, schema.schemaTop),
-  //   },
-  //   {
-  //     title: "Adding Schema Keys",
-  //     task: () =>
-  //       createSchemaObjects(schemaOptions.out, schema.schemaBottom(true)),
-  //   },
-  //   // {
-  //   //   title: "Making Schema Exportable",
-  //   //   task: () => exportSchema(),
-  //   // },
-  // ]);
+  const tasks = new Listr([
+    {
+      title: "Creating File and Adding Imports",
+      task: () => initializeSchema(schemaOptions.outPath),
+    },
+    {
+      title: "Adding Schema Keys",
+      task: async () =>
+        await createObjects(schemaOptions.outPath, schemaKeyValues),
+    },
+    {
+      title: "Making Schema Exportable",
+      task: () => exportSchema(schemaOptions.outPath, schema.schemaBottom()),
+    },
+  ]);
 
-  // await tasks.run();
+  await tasks.run();
 
   // Append Objects to the Schema
 
@@ -52,24 +45,16 @@ export async function createSchema(options, schemaKeyValues) {
   // await appendFile(schemaOptions.out, schema.schemaBottom(true));
 }
 
-async function initializeSchema(outPath, content) {
-  await writeFile(outPath, content);
+async function initializeSchema(outPath) {
+  await writeFile(outPath, schema.schemaTop());
 }
 
-async function createSchemaObjects(outPath, content) {
-  await appendFile(outPath, content);
-  // promptForSchemaObject;
-  // await appendFile(
-  //   schemaOptions.out,
-  //   schema.createSchemaObject({
-  //     schemaName: "users",
-  //     type: "String",
-  //     isRequired: true,
-  //     isDefault: "Arsalan",
-  //   })
-  // );
+async function createObjects(outPath, schemaKeyValues) {
+  for (let i = 0; i < schemaKeyValues.length; i++) {
+    await appendFile(outPath, schema.createSchemaObject(schemaKeyValues[i]));
+  }
 }
 
-async function exportSchema() {
-  await appendFile(schemaOptions.out, schema.schemaBottom(true));
+async function exportSchema(outPath) {
+  await appendFile(outPath, schema.schemaBottom());
 }

@@ -18,7 +18,7 @@ const userSchema = new Schema({
   `;
 }
 
-export function schemaBottom(timeStamps) {
+export function schemaBottom() {
   return `
   timestamps: { createdAt: "created_at", updatedAt: "updated_at" } 
 });

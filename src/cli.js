@@ -1,5 +1,5 @@
-import arg from "arg";
-import inquirer from "inquirer";
+const arg = require("arg");
+const inquirer = require("inquirer");
 const schema = require("./main");
 
 // export var schemaDetails = {};
@@ -7,7 +7,6 @@ function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(
     {
       "--typescript": Boolean,
-      "--mongoose": Boolean,
       "--filepath": String,
       // Aliases
       "-t": "--typescript",
@@ -19,7 +18,6 @@ function parseArgumentsIntoOptions(rawArgs) {
   );
   return {
     language: args["--typescript"] || undefined,
-    mongoose: args["--mongoose"] || false,
     filePath: args["--filepath"] || "/",
   };
 }
@@ -27,7 +25,6 @@ function parseArgumentsIntoOptions(rawArgs) {
 async function promptForMissingOptions(options) {
   const defaultOptions = {
     language: "Javascript",
-    mongoose: false,
     schema: "default",
   };
   // if (options.skipPrompts) {
@@ -48,15 +45,6 @@ async function promptForMissingOptions(options) {
     });
   }
 
-  if (!options.mongoose) {
-    questions.push({
-      type: "confirm",
-      name: "mongoose",
-      message: "Do you want to have it in mongoose?",
-      default: defaultOptions.mongoose,
-    });
-  }
-
   questions.push({
     type: "input",
     name: "schema",
@@ -73,7 +61,7 @@ async function promptForMissingOptions(options) {
   };
 }
 
-export async function promptForSchemaObject() {
+async function promptForSchemaObject() {
   console.log();
   const defaultOptions = {
     name: "default",
@@ -122,9 +110,8 @@ export async function promptForSchemaObject() {
   };
 }
 
-export async function cli(args) {
+async function cli(args) {
   var options = parseArgumentsIntoOptions(args);
-  // Initial Inputs
   options = await promptForMissingOptions(options);
 
   const { schemaKeys } = await inquirer.prompt({
@@ -146,10 +133,7 @@ export async function cli(args) {
     schemaKeys,
   };
 
-  // schemaDetails = {
-  //   options,
-  //   schemaKeyValues,
-  // };
-
-  await schema.createSchema(options, schemaKeyValues);
+  await schema(options, schemaKeyValues);
 }
+
+module.exports = cli;

@@ -8,7 +8,7 @@ const chalk = require("chalk");
 const writeFile = promisify(fs.writeFile);
 const appendFile = promisify(fs.appendFile);
 
-export async function createSchema(options, schemaKeyValues) {
+async function createSchema(options, schemaKeyValues) {
   const schemaOptions = {
     ...options,
     dirPath: path.resolve(__dirname, "../template"),
@@ -36,3 +36,5 @@ async function createObjects(outPath, schemaKeyValues) {
   }
   await appendFile(outPath, schema.schemaBottom());
 }
+
+module.exports = createSchema;

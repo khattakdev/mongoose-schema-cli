@@ -1,5 +1,5 @@
-import arg from "arg";
-import inquirer from "inquirer";
+const arg = require("arg");
+const inquirer = require("inquirer");
 const schema = require("./main");
 
 // export var schemaDetails = {};
@@ -73,7 +73,7 @@ async function promptForMissingOptions(options) {
   };
 }
 
-export async function promptForSchemaObject() {
+async function promptForSchemaObject() {
   console.log();
   const defaultOptions = {
     name: "default",
@@ -122,9 +122,8 @@ export async function promptForSchemaObject() {
   };
 }
 
-export async function cli(args) {
+async function cli(args) {
   var options = parseArgumentsIntoOptions(args);
-  // Initial Inputs
   options = await promptForMissingOptions(options);
 
   const { schemaKeys } = await inquirer.prompt({
@@ -146,10 +145,7 @@ export async function cli(args) {
     schemaKeys,
   };
 
-  // schemaDetails = {
-  //   options,
-  //   schemaKeyValues,
-  // };
-
-  await schema.createSchema(options, schemaKeyValues);
+  await schema(options, schemaKeyValues);
 }
+
+module.exports = cli;

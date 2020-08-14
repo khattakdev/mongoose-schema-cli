@@ -12,7 +12,7 @@ async function createSchema(options, schemaKeyValues) {
   const schemaOptions = {
     ...options,
     dirPath: path.resolve(__dirname, "../template"),
-    outPath: path.resolve(process.cwd(), "./models/"`./${options.schema}.js`),
+    outPath: path.resolve(process.cwd(), `./${options.schema}.js`),
   };
 
   console.log();

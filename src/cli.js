@@ -7,7 +7,6 @@ function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(
     {
       "--typescript": Boolean,
-      "--mongoose": Boolean,
       "--filepath": String,
       // Aliases
       "-t": "--typescript",
@@ -19,7 +18,6 @@ function parseArgumentsIntoOptions(rawArgs) {
   );
   return {
     language: args["--typescript"] || undefined,
-    mongoose: args["--mongoose"] || false,
     filePath: args["--filepath"] || "/",
   };
 }
@@ -27,7 +25,6 @@ function parseArgumentsIntoOptions(rawArgs) {
 async function promptForMissingOptions(options) {
   const defaultOptions = {
     language: "Javascript",
-    mongoose: false,
     schema: "default",
   };
   // if (options.skipPrompts) {
@@ -45,15 +42,6 @@ async function promptForMissingOptions(options) {
       message: "Please choose which language Schema to use",
       choices: ["JavaScript", "TypeScript"],
       default: defaultOptions.language,
-    });
-  }
-
-  if (!options.mongoose) {
-    questions.push({
-      type: "confirm",
-      name: "mongoose",
-      message: "Do you want to have it in mongoose?",
-      default: defaultOptions.mongoose,
     });
   }
 

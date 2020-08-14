@@ -35,15 +35,16 @@ async function promptForMissingOptions(options) {
   // }
 
   const questions = [];
-  if (!options.language) {
-    questions.push({
-      type: "list",
-      name: "language",
-      message: "Please choose which language Schema to use",
-      choices: ["JavaScript", "TypeScript"],
-      default: defaultOptions.language,
-    });
-  }
+  //@TODO: Temporary Disabled, Uncomment after adding Typescript Schema
+  // if (!options.language) {
+  //   questions.push({
+  //     type: "list",
+  //     name: "language",
+  //     message: "Please choose which language Schema to use",
+  //     choices: ["JavaScript", "TypeScript"],
+  //     default: defaultOptions.language,
+  //   });
+  // }
 
   questions.push({
     type: "input",

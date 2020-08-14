@@ -79,7 +79,7 @@ export async function promptForSchemaObject() {
     name: "default",
     type: "String",
     required: true,
-    default: "''",
+    default: "",
   };
   const questions = [];
 

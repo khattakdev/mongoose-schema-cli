@@ -4,7 +4,7 @@ export function createSchemaObject(options) {
    ${schemaName}: {
         type: ${type},
         required: ${isRequired},
-        default: ${defaultValue}
+        default: "${defaultValue}"
     },
     `;
 }

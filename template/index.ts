@@ -1,4 +1,9 @@
-function createSchemaObject(options) {
+function createSchemaObject(options: {
+  schemaName: string;
+  type: string;
+  isRequired: boolean;
+  defaultValue: string;
+}) {
   const { schemaName, type, isRequired, defaultValue } = options;
   return `
    ${schemaName}: {

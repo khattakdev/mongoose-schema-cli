@@ -1,9 +1,11 @@
-const arg = require("arg");
+// const arg = require("arg");
+import arg from "arg";
+// import inquirer from 'inquirer';
+// import schema from
 const inquirer = require("inquirer");
 const schema = require("./main");
 
-// export var schemaDetails = {};
-function parseArgumentsIntoOptions(rawArgs) {
+function parseArgumentsIntoOptions(rawArgs: any[]) {
   const args = arg(
     {
       "--typescript": Boolean,
@@ -17,12 +19,18 @@ function parseArgumentsIntoOptions(rawArgs) {
     }
   );
   return {
-    language: args["--typescript"] || undefined,
+    language: args["--typescript"] || false,
     filePath: args["--filepath"] || "/",
   };
 }
 
-async function promptForMissingOptions(options) {
+type optionsType = {
+  language: boolean;
+  filePath?: string;
+  schemaKeys?: number | 0;
+};
+
+async function promptForMissingOptions(options: optionsType) {
   const defaultOptions = {
     language: "Javascript",
     schema: "default",
@@ -34,7 +42,7 @@ async function promptForMissingOptions(options) {
   //   };
   // }
 
-  const questions = [];
+  const questions: object[] = [];
   //@TODO: Temporary Disabled, Uncomment after adding Typescript Schema
   // if (!options.language) {
   //   questions.push({
@@ -57,7 +65,7 @@ async function promptForMissingOptions(options) {
   return {
     ...options,
     language: options.language || answers.language,
-    mongoose: options.mongoose || answers.mongoose,
+    // mongoose: options.mongoose || answers.mongoose,
     schema: answers.schema,
   };
 }
@@ -111,10 +119,16 @@ async function promptForSchemaObject() {
   };
 }
 
-async function cli(args) {
-  var options = parseArgumentsIntoOptions(args);
+async function cli(args: string[]) {
+  var options: optionsType = parseArgumentsIntoOptions(args);
   options = await promptForMissingOptions(options);
+  /*
+  language: any
+  schema: any,
+  filePath: string | undefined
+  schemaKeys?: number | undefined
 
+  */
   const { schemaKeys } = await inquirer.prompt({
     type: "input",
     name: "schemaKeys",

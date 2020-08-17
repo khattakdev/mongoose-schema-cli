@@ -8,7 +8,12 @@ const chalk = require("chalk");
 const writeFile = promisify(fs.writeFile);
 const appendFile = promisify(fs.appendFile);
 
-async function createSchema(options, schemaKeyValues) {
+async function createSchema(
+  options: {
+    schema: string;
+  },
+  schemaKeyValues: []
+) {
   const schemaOptions = {
     ...options,
     dirPath: path.resolve(__dirname, "../template"),
@@ -29,7 +34,7 @@ async function createSchema(options, schemaKeyValues) {
   console.log(chalk.green("DONE!"), "Schema Generated");
 }
 
-async function createObjects(outPath, schemaKeyValues) {
+async function createObjects(outPath: string, schemaKeyValues: []) {
   await writeFile(outPath, schema.schemaTop());
   for (let i = 0; i < schemaKeyValues.length; i++) {
     await appendFile(outPath, schema.createSchemaObject(schemaKeyValues[i]));

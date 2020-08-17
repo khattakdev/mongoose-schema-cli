@@ -30,7 +30,7 @@ npm install --save mongoose-schema-cli
 ## Usage
 
 ```sh
-msc-gen
+msc
 ```
 
 ## Author

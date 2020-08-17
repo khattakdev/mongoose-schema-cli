@@ -21,6 +21,8 @@
 
 ### ✨ [Demo](https://github.com/eKhattak/mongoose-schema-cli)
 
+![Demo](/demo.gif)
+
 ## Install
 
 ```sh
@@ -30,7 +32,7 @@ npm install --save mongoose-schema-cli
 ## Usage
 
 ```sh
-msc-gen
+msc
 ```
 
 ## Author

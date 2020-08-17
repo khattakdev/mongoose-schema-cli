@@ -1,10 +1,10 @@
 {
   "name": "mongoose-schema-cli",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A MongoDB Schema Generator CLI",
   "main": "index.js",
   "bin": {
-    "msc-gen": "bin/index.js"
+    "msc": "bin/index.js"
   },
   "repository": {
     "type": "git",

@@ -1,23 +1,27 @@
-const path = require("path");
-const fs = require("fs");
-const { promisify } = require("util");
-const Listr = require("listr");
-const schema = require("../template");
-const chalk = require("chalk");
+import path from "path";
+import fs from "fs";
+import { promisify } from "util";
+import Listr from "listr";
+import { createSchemaObject, schemaTop, schemaBottom } from "../template";
 
 const writeFile = promisify(fs.writeFile);
 const appendFile = promisify(fs.appendFile);
 
+type schemaKeyValueType = {
+  name: string;
+  type: string;
+  isRequired: boolean;
+  defaultValue: string;
+};
+
 async function createSchema(
-  options: {
-    schema: string;
-  },
-  schemaKeyValues: []
+  schema: string,
+  schemaKeyValues: schemaKeyValueType[]
 ) {
   const schemaOptions = {
-    ...options,
+    // ...options,
     dirPath: path.resolve(__dirname, "../template"),
-    outPath: path.resolve(process.cwd(), `./${options.schema}.js`),
+    outPath: path.resolve(process.cwd(), `./${schema}.js`),
   };
 
   console.log();
@@ -31,15 +35,18 @@ async function createSchema(
   ]);
 
   await tasks.run();
-  console.log(chalk.green("DONE!"), "Schema Generated");
+  console.log("DONE! Schema Generated");
 }
 
-async function createObjects(outPath: string, schemaKeyValues: []) {
-  await writeFile(outPath, schema.schemaTop());
+async function createObjects(
+  outPath: string,
+  schemaKeyValues: schemaKeyValueType[]
+) {
+  await writeFile(outPath, schemaTop());
   for (let i = 0; i < schemaKeyValues.length; i++) {
-    await appendFile(outPath, schema.createSchemaObject(schemaKeyValues[i]));
+    await appendFile(outPath, createSchemaObject(schemaKeyValues[i]));
   }
-  await appendFile(outPath, schema.schemaBottom());
+  await appendFile(outPath, schemaBottom());
 }
 
-module.exports = createSchema;
+export default createSchema;

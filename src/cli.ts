@@ -1,9 +1,13 @@
-const arg = require("arg");
-const inquirer = require("inquirer");
-const schema = require("./main");
+import arg from "arg";
+import inquirer from "inquirer";
+import createSchema from "./main";
 
-// export var schemaDetails = {};
-function parseArgumentsIntoOptions(rawArgs) {
+function parseArgumentsIntoOptions(
+  rawArgs: any[]
+): {
+  language: boolean;
+  filePath: string;
+} {
   const args = arg(
     {
       "--typescript": Boolean,
@@ -17,24 +21,39 @@ function parseArgumentsIntoOptions(rawArgs) {
     }
   );
   return {
-    language: args["--typescript"] || undefined,
+    language: args["--typescript"] || false,
     filePath: args["--filepath"] || "/",
   };
 }
 
-async function promptForMissingOptions(options) {
+type optionsType = {
+  language: boolean;
+  filePath?: string;
+  schemaKeys?: number | 0;
+};
+
+type questionType = {
+  type: string;
+  name: string;
+  message: string;
+  default: string | boolean | number;
+  choices?: string[] | number[];
+};
+
+async function promptForMissingOptions(
+  options: optionsType
+): Promise<{
+  language: any;
+  schema: any;
+  filePath?: string | undefined;
+  schemaKeys?: number | undefined;
+}> {
   const defaultOptions = {
     language: "Javascript",
     schema: "default",
   };
-  // if (options.skipPrompts) {
-  //   return {
-  //     ...options,
-  //     template: options.template || defaultLanguage,
-  //   };
-  // }
 
-  const questions = [];
+  const questions: questionType[] = [];
   //@TODO: Temporary Disabled, Uncomment after adding Typescript Schema
   // if (!options.language) {
   //   questions.push({
@@ -57,20 +76,18 @@ async function promptForMissingOptions(options) {
   return {
     ...options,
     language: options.language || answers.language,
-    mongoose: options.mongoose || answers.mongoose,
     schema: answers.schema,
   };
 }
 
 async function promptForSchemaObject() {
-  console.log();
   const defaultOptions = {
     name: "default",
     type: "String",
     required: true,
     default: "",
   };
-  const questions = [];
+  const questions: questionType[] = [];
 
   questions.push({
     type: "input",
@@ -101,18 +118,23 @@ async function promptForSchemaObject() {
     default: defaultOptions.default,
   });
 
-  const answers = await inquirer.prompt(questions);
+  const answers: {
+    name: string;
+    type: string;
+    required: boolean;
+    default: string;
+  } = await inquirer.prompt(questions);
 
   return {
-    schemaName: answers.name,
+    name: answers.name,
     type: answers.type,
     isRequired: answers.required,
     defaultValue: answers.default,
   };
 }
 
-async function cli(args) {
-  var options = parseArgumentsIntoOptions(args);
+async function cli(args: string[]) {
+  var options: optionsType = parseArgumentsIntoOptions(args);
   options = await promptForMissingOptions(options);
 
   const { schemaKeys } = await inquirer.prompt({
@@ -122,19 +144,20 @@ async function cli(args) {
     default: 0,
   });
 
-  // Get Schema Keys' Input
-  const schemaKeyValues = [];
+  const schemaKeyValues: {
+    name: string;
+    type: string;
+    isRequired: boolean;
+    defaultValue: string;
+  }[] = [];
   for (let i = 0; i < schemaKeys; i++) {
     const objectValues = await promptForSchemaObject();
     schemaKeyValues.push(objectValues);
   }
 
-  options = {
-    ...options,
-    schemaKeys,
-  };
+  var schema = { ...schemaKeys };
 
-  await schema(options, schemaKeyValues);
+  await createSchema(schema, schemaKeyValues);
 }
 
-module.exports = cli;
+export default cli;

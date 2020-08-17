@@ -21,7 +21,7 @@
 
 ### ✨ [Demo](https://github.com/eKhattak/mongoose-schema-cli)
 
-![Demo](/demo.gif)
+![Demo](/assets/demo.gif)
 
 ## Install
 

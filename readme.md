@@ -21,6 +21,8 @@
 
 ### ✨ [Demo](https://github.com/eKhattak/mongoose-schema-cli)
 
+![Demo](/demo.gif)
+
 ## Install
 
 ```sh

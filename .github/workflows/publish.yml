@@ -1,14 +1,16 @@
 name: NPM Publish
 
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
 on:
   push:
-    branches:
-      - master
+    branches: [master, test]
 
 jobs:
-  release:
+  test:
     name: Pubish
     runs-on: ubuntu-latest,
+
     steps:
       - name: ⏬ checkout
         uses: actions/checkout@v2.1.1
@@ -17,7 +19,8 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org
-      - name: 🚀 Publish
-        run: npm publish --access publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+    #   - name: 🚀 Publish
+    #     run: npm publish --access publish
+    #     env:
+    #       NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+    # This is a basic workflow to help you get started with Actions

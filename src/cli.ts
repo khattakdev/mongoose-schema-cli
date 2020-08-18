@@ -29,7 +29,13 @@ function parseArgumentsIntoOptions(
 type optionsType = {
   language: boolean;
   filePath?: string;
-  schemaKeys?: number | 0;
+};
+
+type missingOptionsType = {
+  language: any;
+  schema: any;
+  filePath?: string;
+  schemaKeys?: number;
 };
 
 type questionType = {
@@ -135,7 +141,9 @@ async function promptForSchemaObject() {
 
 async function cli(args: string[]) {
   var options: optionsType = parseArgumentsIntoOptions(args);
-  options = await promptForMissingOptions(options);
+  var missingOptions: missingOptionsType = await promptForMissingOptions(
+    options
+  );
 
   const { schemaKeys } = await inquirer.prompt({
     type: "input",
@@ -155,8 +163,7 @@ async function cli(args: string[]) {
     schemaKeyValues.push(objectValues);
   }
 
-  var schema = { ...schemaKeys };
-
+  var schema = missingOptions.schema;
   await createSchema(schema, schemaKeyValues);
 }
 

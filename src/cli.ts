@@ -1,7 +1,40 @@
 import arg from "arg";
 import inquirer from "inquirer";
 import createSchema from "./main";
+import * as dataType from "./types";
 
+/**
+ * Run the main program
+ * @param args User Arguments
+ *
+ */
+async function cli(args: string[]) {
+  var options: dataType.OptionsType = parseArgumentsIntoOptions(args);
+  var missingOptions: dataType.MissingOptionsType = await promptForMissingOptions(
+    options
+  );
+
+  const { schemaKeys } = await inquirer.prompt({
+    type: "input",
+    name: "schemaKeys",
+    message: "How many key this Schema has?",
+    default: 0,
+  });
+
+  const schemaKeyValues: dataType.SchemaKeyValuesType[] = [];
+  for (let i = 0; i < schemaKeys; i++) {
+    const objectValues = await promptForSchemaObject();
+    schemaKeyValues.push(objectValues);
+  }
+
+  var schema = missingOptions.schema;
+  await createSchema(schema, schemaKeyValues);
+}
+
+/**
+ * Take Raw Arguments from user and filter them
+ * @param rawArgs Raw Arguments
+ */
 function parseArgumentsIntoOptions(
   rawArgs: any[]
 ): {
@@ -14,7 +47,6 @@ function parseArgumentsIntoOptions(
       "--filepath": String,
       // Aliases
       "-t": "--typescript",
-      "-m": "--mongoose",
     },
     {
       argv: rawArgs.slice(2),
@@ -26,40 +58,24 @@ function parseArgumentsIntoOptions(
   };
 }
 
-type optionsType = {
-  language: boolean;
-  filePath?: string;
-};
-
-type missingOptionsType = {
-  language: any;
-  schema: any;
+/**
+ * Ask for schema related data e.g. Schema's Name
+ * @param options Filtered Arguments provided by User
+ */
+async function promptForMissingOptions(
+  options: dataType.OptionsType
+): Promise<{
+  language: string;
+  schema: string;
   filePath?: string;
   schemaKeys?: number;
-};
-
-type questionType = {
-  type: string;
-  name: string;
-  message: string;
-  default: string | boolean | number;
-  choices?: string[] | number[];
-};
-
-async function promptForMissingOptions(
-  options: optionsType
-): Promise<{
-  language: any;
-  schema: any;
-  filePath?: string | undefined;
-  schemaKeys?: number | undefined;
 }> {
   const defaultOptions = {
     language: "Javascript",
     schema: "default",
   };
 
-  const questions: questionType[] = [];
+  const questions: dataType.QuestionType[] = [];
   //@TODO: Temporary Disabled, Uncomment after adding Typescript Schema
   // if (!options.language) {
   //   questions.push({
@@ -86,6 +102,12 @@ async function promptForMissingOptions(
   };
 }
 
+/**
+ * Take User Input for Schema's Key
+ *
+ * This include data such as
+ * Schema Key's name, type, default Value etc
+ */
 async function promptForSchemaObject() {
   const defaultOptions = {
     name: "default",
@@ -93,7 +115,7 @@ async function promptForSchemaObject() {
     required: true,
     default: "",
   };
-  const questions: questionType[] = [];
+  const questions: dataType.QuestionType[] = [];
 
   questions.push({
     type: "input",
@@ -137,34 +159,6 @@ async function promptForSchemaObject() {
     isRequired: answers.required,
     defaultValue: answers.default,
   };
-}
-
-async function cli(args: string[]) {
-  var options: optionsType = parseArgumentsIntoOptions(args);
-  var missingOptions: missingOptionsType = await promptForMissingOptions(
-    options
-  );
-
-  const { schemaKeys } = await inquirer.prompt({
-    type: "input",
-    name: "schemaKeys",
-    message: "How many key this Schema has?",
-    default: 0,
-  });
-
-  const schemaKeyValues: {
-    name: string;
-    type: string;
-    isRequired: boolean;
-    defaultValue: string;
-  }[] = [];
-  for (let i = 0; i < schemaKeys; i++) {
-    const objectValues = await promptForSchemaObject();
-    schemaKeyValues.push(objectValues);
-  }
-
-  var schema = missingOptions.schema;
-  await createSchema(schema, schemaKeyValues);
 }
 
 export default cli;

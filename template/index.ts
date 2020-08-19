@@ -30,9 +30,3 @@ export function schemaBottom() {
 module.exports = userSchema;
   `;
 }
-
-// module.exports = {
-//   createSchemaObject,
-//   schemaTop,
-//   schemaBottom,
-// };

@@ -9,8 +9,8 @@ import * as dataType from "./types";
  *
  */
 async function cli(args: string[]) {
-  var options: dataType.OptionsType = parseArgumentsIntoOptions(args);
-  var missingOptions: dataType.MissingOptionsType = await promptForMissingOptions(
+  let options: dataType.OptionsType = parseArgumentsIntoOptions(args);
+  let missingOptions: dataType.MissingOptionsType = await promptForMissingOptions(
     options
   );
 
@@ -27,18 +27,18 @@ async function cli(args: string[]) {
     schemaKeyValues.push(objectValues);
   }
 
-  var schema = missingOptions.schema;
+  let schema = missingOptions.schema;
   await createSchema(schema, schemaKeyValues);
 }
 
 /**
- * Take Raw Arguments from user and filter them
+ * Take Raw Arguments from user, filter them and convert them into an Object
  * @param rawArgs Raw Arguments
  */
 function parseArgumentsIntoOptions(
   rawArgs: any[]
 ): {
-  language: boolean;
+  isTypescript: boolean;
   filePath: string;
 } {
   const args = arg(
@@ -46,14 +46,14 @@ function parseArgumentsIntoOptions(
       "--typescript": Boolean,
       "--filepath": String,
       // Aliases
-      "-t": "--typescript",
+      "--ts": "--typescript",
     },
     {
       argv: rawArgs.slice(2),
     }
   );
   return {
-    language: args["--typescript"] || false,
+    isTypescript: args["--typescript"] || false,
     filePath: args["--filepath"] || "/",
   };
 }
@@ -65,27 +65,14 @@ function parseArgumentsIntoOptions(
 async function promptForMissingOptions(
   options: dataType.OptionsType
 ): Promise<{
-  language: string;
+  isTypescript: boolean;
   schema: string;
-  filePath?: string;
-  schemaKeys?: number;
 }> {
   const defaultOptions = {
-    language: "Javascript",
     schema: "default",
   };
 
   const questions: dataType.QuestionType[] = [];
-  //@TODO: Temporary Disabled, Uncomment after adding Typescript Schema
-  // if (!options.language) {
-  //   questions.push({
-  //     type: "list",
-  //     name: "language",
-  //     message: "Please choose which language Schema to use",
-  //     choices: ["JavaScript", "TypeScript"],
-  //     default: defaultOptions.language,
-  //   });
-  // }
 
   questions.push({
     type: "input",
@@ -97,7 +84,6 @@ async function promptForMissingOptions(
   const answers = await inquirer.prompt(questions);
   return {
     ...options,
-    language: options.language || answers.language,
     schema: answers.schema,
   };
 }

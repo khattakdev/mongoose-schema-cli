@@ -1,13 +1,13 @@
 export type OptionsType = {
-  language: boolean;
+  isTypescript: boolean;
   filePath?: string;
 };
 
 export type MissingOptionsType = {
-  language: any;
-  schema: any;
-  filePath?: string;
-  schemaKeys?: number;
+  isTypescript: boolean;
+  schema: string;
+  //   filePath?: string;
+  //   schemaKeys?: number;
 };
 
 export type QuestionType = {

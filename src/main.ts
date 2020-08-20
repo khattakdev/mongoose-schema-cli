@@ -1,5 +1,5 @@
 import path from "path";
-import fs, { mkdirSync } from "fs";
+import fs from "fs";
 import { promisify } from "util";
 import Listr from "listr";
 import { createSchemaObject, schemaTop, schemaBottom } from "../template";

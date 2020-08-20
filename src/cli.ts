@@ -37,19 +37,29 @@ async function cli(args: string[]) {
  * @param rawArgs Raw Arguments
  */
 function parseArgumentsIntoOptions(rawArgs: any[]) {
-  const args = arg(
-    {
-      "--folder": String,
-      // Aliases
-      "--ts": "--typescript",
-    },
-    {
-      argv: rawArgs.slice(2),
+  try {
+    const args = arg(
+      {
+        "--folder": String,
+        // Aliases
+        "--ts": "--typescript",
+      },
+      {
+        argv: rawArgs.slice(2),
+      }
+    );
+    return {
+      folderName: args["--folder"] || "",
+    };
+  } catch (err) {
+    if (err.code === "ARG_UNKNOWN_OPTION") {
+      console.log(err.message);
+      process.exit(1);
     }
-  );
-  return {
-    folderName: args["--folder"] || "",
-  };
+    return {
+      folderName: "",
+    };
+  }
 }
 
 export default cli;

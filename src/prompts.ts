@@ -7,7 +7,7 @@ import { OptionsType, QuestionType } from "./types";
 export async function promptForMissingOptions(options: OptionsType) {
   const defaultOptions = {
     schema: "default",
-    folderName: "models",
+    folderName: options.folderName ? options.folderName : "models",
   };
 
   const questions: QuestionType[] = [];
@@ -19,12 +19,14 @@ export async function promptForMissingOptions(options: OptionsType) {
     default: defaultOptions.schema,
   });
 
-  questions.push({
-    type: "input",
-    name: "folderName",
-    message: "Please input Folder Name",
-    default: defaultOptions.folderName,
-  });
+  if (!options.folderName) {
+    questions.push({
+      type: "input",
+      name: "folderName",
+      message: "Please input Folder Name",
+      default: defaultOptions.folderName,
+    });
+  }
 
   const answers: {
     schema: string;
@@ -33,7 +35,7 @@ export async function promptForMissingOptions(options: OptionsType) {
   return {
     ...options,
     schema: answers.schema,
-    folderName: answers.folderName,
+    folderName: answers.folderName || defaultOptions.folderName,
   };
 }
 

@@ -48,7 +48,7 @@ function parseArgumentsIntoOptions(rawArgs: any[]) {
     }
   );
   return {
-    folderName: args["--folder"] || "/",
+    folderName: args["--folder"] || "",
   };
 }
 

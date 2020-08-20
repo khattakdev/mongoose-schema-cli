@@ -1,5 +1,5 @@
 export type OptionsType = {
-  folderName?: string;
+  folderName: string;
 };
 
 export type MissingOptionsType = {

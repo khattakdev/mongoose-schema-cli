@@ -1,12 +1,10 @@
 export type OptionsType = {
-  isTypescript: boolean;
-  filePath?: string;
+  folderName?: string;
 };
 
 export type MissingOptionsType = {
-  isTypescript: boolean;
   schema: string;
-  //   filePath?: string;
+  folderName: string;
   //   schemaKeys?: number;
 };
 

@@ -28,7 +28,7 @@ async function cli(args: string[]) {
     schemaKeyValues.push(objectValues);
   }
 
-  let schema = missingOptions.schema;
+  let schema = { ...missingOptions };
   await createSchema(schema, schemaKeyValues);
 }
 
@@ -36,16 +36,10 @@ async function cli(args: string[]) {
  * Take Raw Arguments from user, filter them and convert them into an Object
  * @param rawArgs Raw Arguments
  */
-function parseArgumentsIntoOptions(
-  rawArgs: any[]
-): {
-  isTypescript: boolean;
-  filePath: string;
-} {
+function parseArgumentsIntoOptions(rawArgs: any[]) {
   const args = arg(
     {
-      "--typescript": Boolean,
-      "--filepath": String,
+      "--folder": String,
       // Aliases
       "--ts": "--typescript",
     },
@@ -54,8 +48,7 @@ function parseArgumentsIntoOptions(
     }
   );
   return {
-    isTypescript: args["--typescript"] || false,
-    filePath: args["--filepath"] || "/",
+    folderName: args["--folder"] || "/",
   };
 }
 

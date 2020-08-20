@@ -6,6 +6,8 @@ import { createSchemaObject, schemaTop, schemaBottom } from "../template";
 
 const writeFile = promisify(fs.writeFile);
 const appendFile = promisify(fs.appendFile);
+const createFolder = promisify(fs.mkdir);
+const doesFolderExist = promisify(fs.exists);
 
 type schemaKeyValueType = {
   name: string;
@@ -15,15 +17,27 @@ type schemaKeyValueType = {
 };
 
 async function createSchema(
-  schema: string,
+  schemaObj: {
+    folderName: string;
+    schema: string;
+  },
   schemaKeyValues: schemaKeyValueType[]
 ) {
   const schemaOptions = {
-    // ...options,
     dirPath: path.resolve(__dirname, "../template"),
-    outPath: path.resolve(process.cwd(), `./${schema}.js`),
+    outPath: path.normalize(
+      path.resolve(
+        process.cwd(),
+        `./${schemaObj.folderName}`,
+        `./${schemaObj.schema}.js`
+      )
+    ),
   };
 
+  // Create a Folder, if doesn't exist
+  if (!(await doesFolderExist(schemaObj.folderName))) {
+    createFolder(schemaObj.folderName);
+  }
   console.log();
 
   const tasks = new Listr([

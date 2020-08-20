@@ -4,14 +4,10 @@ import { OptionsType, QuestionType } from "./types";
  * Ask for schema related data e.g. Schema's Name
  * @param options Filtered Arguments provided by User
  */
-export async function promptForMissingOptions(
-  options: OptionsType
-): Promise<{
-  isTypescript: boolean;
-  schema: string;
-}> {
+export async function promptForMissingOptions(options: OptionsType) {
   const defaultOptions = {
     schema: "default",
+    folderName: options.folderName ? options.folderName : "models",
   };
 
   const questions: QuestionType[] = [];
@@ -23,10 +19,23 @@ export async function promptForMissingOptions(
     default: defaultOptions.schema,
   });
 
-  const answers = await inquirer.prompt(questions);
+  if (!options.folderName) {
+    questions.push({
+      type: "input",
+      name: "folderName",
+      message: "Please input Folder Name",
+      default: defaultOptions.folderName,
+    });
+  }
+
+  const answers: {
+    schema: string;
+    folderName: string;
+  } = await inquirer.prompt(questions);
   return {
     ...options,
     schema: answers.schema,
+    folderName: answers.folderName || defaultOptions.folderName,
   };
 }
 

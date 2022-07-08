@@ -15,7 +15,7 @@ export async function promptForMissingOptions(options: OptionsType) {
   questions.push({
     type: "input",
     name: "schema",
-    message: "Please input Schema name",
+    message: "Please input Schema name: ",
     default: defaultOptions.schema,
   });
 
@@ -23,7 +23,7 @@ export async function promptForMissingOptions(options: OptionsType) {
     questions.push({
       type: "input",
       name: "folderName",
-      message: "Please input Folder Name",
+      message: "Please input Folder Name: ",
       default: defaultOptions.folderName,
     });
   }
@@ -57,7 +57,7 @@ export async function promptForSchemaObject() {
   questions.push({
     type: "input",
     name: "name",
-    message: "Please input Schema Key name",
+    message: "Please input Schema Key name: ",
     default: defaultOptions.name,
   });
 
@@ -72,7 +72,7 @@ export async function promptForSchemaObject() {
   questions.push({
     type: "confirm",
     name: "required",
-    message: "Is this Schema Key Required",
+    message: "Is this Schema Key Required?",
     default: defaultOptions.required,
   });
 
